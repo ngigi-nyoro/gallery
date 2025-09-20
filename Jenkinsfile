@@ -15,12 +15,6 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                sh 'npm run build || echo "No build script defined"'
-            }
-        }
-
         stage('Test') {
             steps {
                 echo "No tests found. Skipping..."
