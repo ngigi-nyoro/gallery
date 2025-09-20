@@ -21,7 +21,22 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo "No tests found. Skipping..."
+                sh 'npm run test'
+            }
+            post {
+                failure {
+                    mail to: 'nyorojnr@gmail.com',
+                         subject: "Tests Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                         body: """Hello,
+
+                            The test stage failed in job: ${env.JOB_NAME}.
+                            Build number: ${env.BUILD_NUMBER}
+                            Check logs: ${env.BUILD_URL}
+
+                            Regards,
+                            Jenkins
+                            """
+                }
             }
         }
 
