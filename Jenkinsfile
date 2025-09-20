@@ -5,6 +5,10 @@ pipeline {
         nodejs "node18"
     }
 
+    environment {
+        RENDER_SITE_URL = 'https://devops-gallery-impe.onrender.com/'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -59,10 +63,24 @@ pipeline {
 
     post {
         success {
-            echo "✅ Pipeline executed successfully and deployment triggered!"
+            echo "Pipeline executed successfully and deployment triggered!"
+
+            // Send Slack notification
+            slackSend (
+                channel: '#lawrence_ip1',
+                color: 'good',
+                message: "*Build #${env.BUILD_ID}* succeeded!\n🚀 Deployed site: ${env.RENDER_SITE_URL}"
+            )
         }
         failure {
             echo "❌ Pipeline failed."
+
+            // Send Slack notification on failure too
+            slackSend (
+                channel: '#lawrence_ip1',
+                color: 'danger',
+                message: "*Build #${env.BUILD_ID}* failed! Please check Jenkins logs."
+            )
         }
     }
 }
